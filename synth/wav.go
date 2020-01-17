@@ -147,7 +147,7 @@ func newWAV(numChannels uint16, sampleRate uint32, bitsPerSample int, littleEndi
 
 // seek sets time (in seconds) of pointer zero-fills by default
 func (w *wavData) seek(time float32, fill bool) {
-	sample := round(float32(w.sampleRate) * time)
+	sample := int(math.Round(float64(w.sampleRate) * float64(time)))
 
 	w.pointer = uint(w.numChannels) * uint(sample)
 
@@ -180,7 +180,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 		frequency   = float32(frequencyFromSemitone(semitone)) * math.Pi * 2 / float32(sampleRate)
 
 		// amount of blocks to be written
-		blocksOut = round(float32(sampleRate) * time)
+		blocksOut = int(math.Round(float64(sampleRate) * float64(time)))
 		// reduces sound artifacts by fading at last fadeSeconds
 		nonZero = float32(blocksOut) - float32(sampleRate)*fadeSeconds
 		// fade interval in samples

@@ -24,10 +24,6 @@ func powInt(x, y int) int {
 	return result
 }
 
-func round(x float32) int {
-	return int(math.Round(float64(x)))
-}
-
 func min(x, y int) int {
 	if x <= y {
 		return x
