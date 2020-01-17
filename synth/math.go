@@ -38,10 +38,6 @@ func max(x, y int) int {
 	return y
 }
 
-func floor(x float32) int {
-	return int(math.Floor(float64(x)))
-}
-
 func sin(x float32) float32 {
 	return float32(math.Sin(float64(x)))
 }

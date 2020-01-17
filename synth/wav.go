@@ -191,7 +191,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 		stop  = len(w.data)
 
 		// determines amount of blocks to be updated
-		blocksIn = min(floor(float32(stop-start)/float32(numChannels)), blocksOut)
+		blocksIn = min(int(math.Floor(float64(stop-start)/float64(numChannels))), blocksOut)
 
 		// k = cached index of data
 		// d = sample data value
