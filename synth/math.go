@@ -14,8 +14,6 @@
 
 package synth
 
-import "math"
-
 func powInt(x, y int) int {
 	result := 1
 	for i := 0; i < y; i++ {
@@ -36,8 +34,4 @@ func max(x, y int) int {
 		return x
 	}
 	return y
-}
-
-func sin(x float32) float32 {
-	return float32(math.Sin(float64(x)))
 }

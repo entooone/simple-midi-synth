@@ -219,7 +219,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 			d = 0
 
 			if frequency > 0 {
-				d = amplitude * sin(frequency*float32(i))
+				d = amplitude * float32(math.Sin(float64(frequency)*float64(i)))
 				if float32(i) < fade {
 					d *= float32(i) / fade
 				} else if float32(i) > nonZero {
@@ -245,7 +245,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 
 			// only write non-zero data to specified channels
 			if frequency > 0 || !skipChannels[j] {
-				d = amplitude * sin(frequency*float32(i))
+				d = amplitude * float32(math.Sin(float64(frequency)*float64(i)))
 				if float32(i) < fade {
 					d *= float32(i) / fade
 				} else if float32(i) > nonZero {
