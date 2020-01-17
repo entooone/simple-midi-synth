@@ -19,7 +19,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/entooone/simple-midi-synth/synth"
+	"github.com/entooone/simple-midi-synth"
 	"io"
 	"log"
 	"os"
