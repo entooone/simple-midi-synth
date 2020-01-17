@@ -22,14 +22,14 @@ func powInt(x, y int) int {
 	return result
 }
 
-func min(x, y int) int {
+func minInt(x, y int) int {
 	if x <= y {
 		return x
 	}
 	return y
 }
 
-func max(x, y int) int {
+func maxInt(x, y int) int {
 	if x >= y {
 		return x
 	}

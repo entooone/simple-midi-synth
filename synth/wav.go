@@ -191,7 +191,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 		stop  = len(w.data)
 
 		// determines amount of blocks to be updated
-		blocksIn = min(int(math.Floor(float64(stop-start)/float64(numChannels))), blocksOut)
+		blocksIn = minInt(int(math.Floor(float64(stop-start)/float64(numChannels))), blocksOut)
 
 		// k = cached index of data
 		// d = sample data value
@@ -257,7 +257,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 		}
 	}
 
-	end := max(start+blocksOut*int(numChannels), stop) * (w.bitsPerSample >> 3)
+	end := maxInt(start+blocksOut*int(numChannels), stop) * (w.bitsPerSample >> 3)
 	w.chunkSize = end + len(w.header) - 8
 	w.subChunk2Size = end
 
