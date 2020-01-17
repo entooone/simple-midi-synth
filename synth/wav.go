@@ -99,7 +99,7 @@ func noteFromSemitone(semitone int) (string, error) {
 // frequencyFromSemitone converts semitone index to frequency in Hz
 func frequencyFromSemitone(semitone int) float32 {
 	// A4 is 440 Hz, 12 semitones per octave
-	return 440 * pow(2, float32(semitone-69)/12)
+	return float32(440 * math.Pow(2, float64(semitone-69)/12))
 }
 
 type wavData struct {
@@ -309,7 +309,7 @@ func (w *wavData) typeData() *bytes.Buffer {
 
 	// convert signed normalized sound data to typed integer data
 	// i.e. [-1, 1] -> [INT_MIN, INT_MAX]
-	amplitude := pow(2, float32(w.bitsPerSample-1)) - 1
+	amplitude := float32(math.Pow(2, float64(w.bitsPerSample-1)) - 1)
 
 	switch bytesPerSample {
 	case 1:

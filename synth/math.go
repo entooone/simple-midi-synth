@@ -16,10 +16,6 @@ package synth
 
 import "math"
 
-func pow(x, y float32) float32 {
-	return float32(math.Pow(float64(x), float64(y)))
-}
-
 func powInt(x, y int) int {
 	result := 1
 	for i := 0; i < y; i++ {
