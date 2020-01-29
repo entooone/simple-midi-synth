@@ -19,11 +19,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/entooone/simple-midi-synth"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+
+	synth "github.com/entooone/simple-midi-synth"
 )
 
 func fileNameWithoutExt(path string) string {
