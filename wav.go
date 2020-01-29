@@ -23,9 +23,9 @@ import (
 )
 
 func semitoneFromNote(note string) (int, error) {
-	// matches occurence of A through G
+	// matches occurrence of A through G
 	// followed by positive or negative integer
-	// followed by 0 to 2 occurences of flat or sharp
+	// followed by 0 to 2 occurrences of flat or sharp
 	const re = `^([A-G])(\-?\d+)(b{0,2}|#{0,2})$`
 
 	// if semitone is unrecognized, assume REST
