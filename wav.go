@@ -16,6 +16,7 @@ package synth
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"math"
@@ -109,8 +110,8 @@ type wavData struct {
 	numChannels   uint16
 	sampleRate    uint32
 	bitsPerSample int
-	chunkSize     int
-	subChunk2Size int
+	chunkSize     uint32
+	subChunk2Size uint32
 }
 
 func newWAV(numChannels uint16, sampleRate uint32, bitsPerSample int, littleEndian bool, data []byte) (*wavData, error) {
@@ -258,8 +259,11 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 	}
 
 	end := maxInt(start+blocksOut*int(numChannels), stop) * (w.bitsPerSample >> 3)
-	w.chunkSize = end + len(w.header) - 8
-	w.subChunk2Size = end
+	w.chunkSize = uint32(end + len(w.header) - 8)
+	w.subChunk2Size = uint32(end)
+
+	binary.LittleEndian.PutUint32(w.header[4:8], w.chunkSize)
+	binary.LittleEndian.PutUint32(w.header[40:44], w.subChunk2Size)
 
 	if !reset {
 		w.pointer = uint(start + blocksOut*int(numChannels))
@@ -304,7 +308,7 @@ func (w *wavData) writeProgression(notes []*progression, amplitude float32, chan
 func (w *wavData) typeData() *bytes.Buffer {
 	bytesPerSample := w.bitsPerSample >> 3
 	size := w.subChunk2Size
-	samples := size / bytesPerSample
+	samples := int(size) / bytesPerSample
 	buf := make([]byte, size)
 
 	// convert signed normalized sound data to typed integer data
