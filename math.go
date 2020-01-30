@@ -14,14 +14,6 @@
 
 package synth
 
-func powInt(x, y int) int {
-	result := 1
-	for i := 0; i < y; i++ {
-		result *= x
-	}
-	return result
-}
-
 func minInt(x, y int) int {
 	if x <= y {
 		return x
