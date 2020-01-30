@@ -238,8 +238,6 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 
 	// append data
 	for i := blocksIn; i < blocksOut; i++ {
-		k = start + i*int(numChannels)
-
 		// iterate through all channels
 		for j := 0; j < int(numChannels); j++ {
 			d = 0
