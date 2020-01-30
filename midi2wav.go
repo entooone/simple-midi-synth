@@ -108,7 +108,7 @@ func MIDIToWAV(reader io.Reader) (*bytes.Buffer, error) {
 		for i := 0; i < len(tracks); i++ {
 			track := tracks[i]
 			var delta uint
-			m := make(map[int][]*noteValue, 0)
+			m := make(map[int][]*noteValue)
 
 			for j := 0; j < len(track); j++ {
 				event := track[j]
