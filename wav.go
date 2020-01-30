@@ -77,7 +77,7 @@ func noteFromSemitone(semitone int) (string, error) {
 	)
 
 	octaveIndex := int(math.Floor(float64(semitone) / 12))
-	toneIndex := int(math.Floor(float64(semitone - octaveIndex*12)))
+	toneIndex := semitone - octaveIndex*12
 
 	if octaveIndex >= len(octaves) {
 		return "REST", errors.New("invalid octave")
