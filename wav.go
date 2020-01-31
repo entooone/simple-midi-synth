@@ -138,7 +138,7 @@ func newWAV(numChannels uint16, sampleRate uint32, bitsPerSample int, littleEndi
 
 	return &wavData{
 		header:        header,
-		data:          make([]float32, 0),
+		data:          nil,
 		pointer:       0,
 		numChannels:   numChannels,
 		sampleRate:    sampleRate,
@@ -152,14 +152,14 @@ func (w *wavData) seek(time float32, fill bool) {
 
 	w.pointer = uint(w.numChannels) * uint(sample)
 
-	if fill {
-		// zero-fill seek
-		for uint(len(w.data)) < w.pointer {
-			w.data = append(w.data, 0)
-		}
-	} else {
-		w.pointer = uint(len(w.data))
-	}
+	// if fill {
+	// 	// zero-fill seek
+	// 	for uint(len(w.data)) < w.pointer {
+	// 		w.data = append(w.data, 0)
+	// 	}
+	// } else {
+	// 	w.pointer = uint(len(w.data))
+	// }
 }
 
 // writeNote writes the specified note to the sound data
@@ -192,7 +192,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 		stop  = len(w.data)
 
 		// determines amount of blocks to be updated
-		blocksIn = minInt(int(math.Floor(float64(stop-start)/float64(numChannels))), blocksOut)
+		// blocksIn = minInt(int(math.Floor(float64(stop-start)/float64(numChannels))), blocksOut)
 
 		// k = cached index of data
 		// d = sample data value
@@ -213,7 +213,7 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 	}
 
 	// update existing data
-	for i := 0; i < blocksIn; i++ {
+	for i := 0; i < blocksOut; i++ {
 		// iterate through specified channels
 		for j := 0; j < len(channels); j++ {
 			k = start + i*int(numChannels) + channels[j]
@@ -237,24 +237,24 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 	}
 
 	// append data
-	for i := blocksIn; i < blocksOut; i++ {
-		// iterate through all channels
-		for j := 0; j < int(numChannels); j++ {
-			d = 0
+	// for i := blocksIn; i < blocksOut; i++ {
+	// 	// iterate through all channels
+	// 	for j := 0; j < int(numChannels); j++ {
+	// 		d = 0
 
-			// only write non-zero data to specified channels
-			if frequency > 0 || !skipChannels[j] {
-				d = amplitude * float32(math.Sin(float64(frequency)*float64(i)))
-				if float32(i) < fade {
-					d *= float32(i) / fade
-				} else if float32(i) > nonZero {
-					d *= float32(blocksOut-i+1) / fade
-				}
-			}
+	// 		// only write non-zero data to specified channels
+	// 		if frequency > 0 || !skipChannels[j] {
+	// 			d = amplitude * float32(math.Sin(float64(frequency)*float64(i)))
+	// 			if float32(i) < fade {
+	// 				d *= float32(i) / fade
+	// 			} else if float32(i) > nonZero {
+	// 				d *= float32(blocksOut-i+1) / fade
+	// 			}
+	// 		}
 
-			w.data = append(w.data, d)
-		}
-	}
+	// 		w.data = append(w.data, d)
+	// 	}
+	// }
 
 	end := maxInt(start+blocksOut*int(numChannels), stop) * (w.bitsPerSample >> 3)
 	w.chunkSize = uint32(end + len(w.header) - 8)
@@ -275,7 +275,21 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 func (w *wavData) writeProgression(notes []*progression, amplitude float32, channels []int, blend bool, reset bool, relativeDuration int) {
 	start := w.pointer
 
-	var secs, rest float32
+	var max uint
+	for i := 0; i < len(notes); i++ {
+		var (
+			time = notes[i].time
+			off  = notes[i].offset
+		)
+		sample := int(math.Round(float64(w.sampleRate) * float64(off+time)))
+		val := uint(w.numChannels) * uint(sample+1)
+
+		if max < val {
+			max = val
+		}
+	}
+	w.data = make([]float32, max)
+
 	for i := 0; i < len(notes); i++ {
 		var (
 			note = notes[i].note
@@ -287,15 +301,7 @@ func (w *wavData) writeProgression(notes []*progression, amplitude float32, chan
 		// for asynchronous progression
 		w.seek(off, true)
 
-		if relativeDuration == 1 || note == "REST" {
-			w.writeNote(note, time, amp*amplitude, channels, blend, false, 1)
-		} else {
-			secs = time * float32(relativeDuration)
-			rest = time - secs
-
-			w.writeNote(note, secs, amp*amplitude, channels, blend, false, 1)
-			w.writeNote("REST", rest, 1, channels, blend, false, 1)
-		}
+		w.writeNote(note, time, amp*amplitude, channels, blend, false, 1)
 	}
 
 	if reset {
