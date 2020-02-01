@@ -147,9 +147,8 @@ func newWAV(numChannels uint16, sampleRate uint32, bitsPerSample int, littleEndi
 }
 
 // seek sets time (in seconds) of pointer zero-fills by default
-func (w *wavData) seek(time float32, fill bool) {
+func (w *wavData) seek(time float32) {
 	sample := int(math.Round(float64(w.sampleRate) * float64(time)))
-
 	w.pointer = uint(w.numChannels) * uint(sample)
 }
 
@@ -267,7 +266,7 @@ func (w *wavData) writeProgression(notes []*progression, amplitude float32, chan
 		)
 
 		// for asynchronous progression
-		w.seek(off, true)
+		w.seek(off)
 
 		w.writeNote(note, time, amp*amplitude, channels, blend, false, 1)
 	}
