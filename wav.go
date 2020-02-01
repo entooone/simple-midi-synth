@@ -151,15 +151,6 @@ func (w *wavData) seek(time float32, fill bool) {
 	sample := int(math.Round(float64(w.sampleRate) * float64(time)))
 
 	w.pointer = uint(w.numChannels) * uint(sample)
-
-	// if fill {
-	// 	// zero-fill seek
-	// 	for uint(len(w.data)) < w.pointer {
-	// 		w.data = append(w.data, 0)
-	// 	}
-	// } else {
-	// 	w.pointer = uint(len(w.data))
-	// }
 }
 
 // writeNote writes the specified note to the sound data
@@ -190,9 +181,6 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 		// index of start and stop samples
 		start = int(w.pointer)
 		stop  = len(w.data)
-
-		// determines amount of blocks to be updated
-		// blocksIn = minInt(int(math.Floor(float64(stop-start)/float64(numChannels))), blocksOut)
 
 		// k = cached index of data
 		// d = sample data value
@@ -235,26 +223,6 @@ func (w *wavData) writeNote(note string, time float32, amplitude float32, channe
 			}
 		}
 	}
-
-	// append data
-	// for i := blocksIn; i < blocksOut; i++ {
-	// 	// iterate through all channels
-	// 	for j := 0; j < int(numChannels); j++ {
-	// 		d = 0
-
-	// 		// only write non-zero data to specified channels
-	// 		if frequency > 0 || !skipChannels[j] {
-	// 			d = amplitude * float32(math.Sin(float64(frequency)*float64(i)))
-	// 			if float32(i) < fade {
-	// 				d *= float32(i) / fade
-	// 			} else if float32(i) > nonZero {
-	// 				d *= float32(blocksOut-i+1) / fade
-	// 			}
-	// 		}
-
-	// 		w.data = append(w.data, d)
-	// 	}
-	// }
 
 	end := maxInt(start+blocksOut*int(numChannels), stop) * (w.bitsPerSample >> 3)
 	w.chunkSize = uint32(end + len(w.header) - 8)
